@@ -18,7 +18,17 @@ RUN pip install pynvim \
 
 RUN curl -fLo ~/.config/nvim/autoload/plug.vim --create-dirs \
     https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim \
-    && nvim --headless +PlugInstall +qall
+    && nvim --headless +PlugInstall +qall \
+    && nvim --headless +'CocInstall -sync coc-snippets ' +qall \
+    && nvim --headless +'CocInstall -sync coc-vimlsp' +qall \
+    && nvim --headless +'CocInstall -sync coc-json' +qall \
+    && nvim --headless +'CocInstall -sync coc-yaml' +qall \
+    && nvim --headless +'CocInstall -sync coc-xml' +qall \
+    && nvim --headless +'CocInstall -sync coc-markdownlint' +qall \
+    && nvim --headless +'CocInstall -sync coc-html' +qall \
+    && nvim --headless +'CocInstall -sync coc-css' +qall \
+    && nvim --headless +'CocInstall -sync coc-tsserver' +qall \
+    && nvim --headless +'CocInstall -sync coc-phpls' +qall
 
 WORKDIR /data
 
