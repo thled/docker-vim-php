@@ -1,25 +1,24 @@
 FROM alpine:latest
 
 RUN apk add --no-cache \
-    bash curl git neovim nodejs python3 ripgrep \
+    bash curl gcc git musl-dev neovim neovim-doc nodejs python3-dev py-pip ripgrep yarn \
     php php-ctype php-iconv php-json php-openssl php-phar
 
-RUN adduser -D neovim \
-    # && mkdir -p /home/neovim/.local/share/nvim/shada \
-    && chown -R neovim:neovim /home/neovim
-    # && chmod 0600 /home/neovim/.local/share/nvim/shada/main.shada
+COPY nvim /home/neovim/.config/nvim
 
-RUN mkdir -p /.composer && chown neovim:neovim /.composer \
-    && curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+RUN adduser -D neovim \
+    && chmod 777 /usr/local/bin \
+    && chown -R neovim:neovim /home/neovim
 
 USER neovim
 
-COPY --chown=neovim nvim /home/neovim/.config/nvim
+RUN pip install pynvim \
+    && yarn global add neovim \
+    && curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
 RUN curl -fLo ~/.config/nvim/autoload/plug.vim --create-dirs \
-    https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
-
-RUN nvim --headless +PlugInstall +qall
+    https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim \
+    && nvim --headless +PlugInstall +qall
 
 WORKDIR /data
 
