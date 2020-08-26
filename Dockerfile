@@ -1,10 +1,23 @@
 FROM alpine:latest
 
+ENV RIPGREP_CONFIG_PATH "/home/neovim/.config/ripgrep/config"
+ENV FZF_DEFAULT_COMMAND "rg --files --hidden"
+ENV INTELEPHENSE_KEY "42"
+
+# install neovim and dependencies
 RUN apk add --no-cache \
-    bash curl gcc git musl-dev neovim neovim-doc nodejs python3-dev py-pip ripgrep yarn \
+    neovim neovim-doc \
+    # needed by Dockerfile
+    curl \
+    # needed by neovim as provider
+    python3-dev py-pip gcc musl-dev \
+    nodejs yarn \
+    # needed by fzf
+    bash ripgrep git \
+    # needed by Phpactor
     php php-ctype php-iconv php-json php-openssl php-phar
 
-COPY nvim /home/neovim/.config/nvim
+COPY config /home/neovim/.config
 
 RUN adduser -D neovim \
     && chmod 777 /usr/local/bin \
@@ -12,13 +25,19 @@ RUN adduser -D neovim \
 
 USER neovim
 
-RUN pip install pynvim \
+RUN \
+    # install pythons neovim plugin
+    pip install pynvim \
+    # install nodes neovim plugin
     && yarn global add neovim \
-    && curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
-
-RUN curl -fLo ~/.config/nvim/autoload/plug.vim --create-dirs \
+    # install phps composer
+    && curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer \
+    # install plugin manager for neovim
+    && curl -fLo ~/.config/nvim/autoload/plug.vim --create-dirs \
     https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim \
+    # install neovim plugins
     && nvim --headless +PlugInstall +qall \
+    # install CoC extensions (one at a time otherwise some fail)
     && nvim --headless +'CocInstall -sync coc-snippets ' +qall \
     && nvim --headless +'CocInstall -sync coc-vimlsp' +qall \
     && nvim --headless +'CocInstall -sync coc-json' +qall \
