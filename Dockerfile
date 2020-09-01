@@ -1,20 +1,20 @@
 FROM alpine:latest
 
+ARG INTELEPHENSE_KEY="42"
 ENV RIPGREP_CONFIG_PATH "/home/neovim/.config/ripgrep/config"
 ENV FZF_DEFAULT_COMMAND "rg --files --hidden"
-ENV INTELEPHENSE_KEY "42"
 
 # install neovim and dependencies
 RUN apk add --no-cache \
     neovim neovim-doc \
-    # needed by Dockerfile
+    # needed by dockerfile
     curl \
     # needed by neovim as provider
     python3-dev py-pip gcc musl-dev \
     nodejs yarn \
     # needed by fzf
     bash ripgrep git \
-    # needed by Phpactor
+    # needed by phpactor
     php php-ctype php-iconv php-json php-openssl php-phar
 
 COPY config /home/neovim/.config
@@ -37,7 +37,7 @@ RUN \
     https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim \
     # install neovim plugins
     && nvim --headless +PlugInstall +qall \
-    # install CoC extensions (one at a time otherwise some fail)
+    # install coc extensions (one at a time otherwise some fail)
     && nvim --headless +'CocInstall -sync coc-snippets ' +qall \
     && nvim --headless +'CocInstall -sync coc-vimlsp' +qall \
     && nvim --headless +'CocInstall -sync coc-json' +qall \
@@ -47,7 +47,18 @@ RUN \
     && nvim --headless +'CocInstall -sync coc-html' +qall \
     && nvim --headless +'CocInstall -sync coc-css' +qall \
     && nvim --headless +'CocInstall -sync coc-tsserver' +qall \
-    && nvim --headless +'CocInstall -sync coc-phpls' +qall
+    && nvim --headless +'CocInstall -sync coc-phpls' +qall \
+    # insert intelephense key
+    && sed -i "s/{{ nvim_coc_intelephense }}/$INTELEPHENSE_KEY/g" /home/neovim/.config/nvim/coc-settings.json
+
+# install coc-xml dependencies
+# RUN cd /home/neovim \
+#     openjdk11 \
+#     # install limmex
+#     && git clone https://github.com/eclipse/lemminx.git \
+#     && cd lemminx && ./mvnw clean verify \
+#     && mv org.eclipse.lemminx/taget/org.eclipse.lemminx-uber.jar /home/neovim/.config/coc/extensions/coc-xml-data \
+#     && rm -rf /home/neovim/lemminx
 
 WORKDIR /data
 
