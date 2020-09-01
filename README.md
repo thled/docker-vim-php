@@ -23,17 +23,16 @@ A Docker container to run neovim with plugins to assist PHP development.
   - Fish:
 
   ```shell
-  function pvim
-    docker run --rm -it -v (pwd):/data pvim
-  end
-
-  funcsave rmi
+  $ function pvim
+      docker run --rm -it -v (pwd):/data pvim
+    end
+  $ funcsave rmi
   ```
 
   - Bash:
 
   ```shell
-  echo 'alias pvim="docker run --rm -it -v $(pwd):/data pvim"' >> ~/.bashrc
+  $ echo 'alias pvim="docker run --rm -it -v $(pwd):/data pvim"' >> ~/.bashrc
   ```
 
 [docker]: https://docs.docker.com/install
