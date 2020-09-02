@@ -8,7 +8,7 @@ A Docker container to run neovim with plugins to assist PHP development.
 
 ## Installation
 
-1. Clone this repository: `$ git clone git@gihub.com:thled/docker-vim-php.git`
+1. Clone this repository: `$ git clone git@github.com:thled/docker-vim-php.git`
 1. Change to project directory: `$ cd docker-vim-php`
 1. Build image: `$ docker build --build-arg INTELEPHENSE_KEY=XXX -t pvim .` (Arg for Intelephense premium key is optional.)
 
