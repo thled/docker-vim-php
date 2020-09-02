@@ -15,7 +15,7 @@ RUN apk add --no-cache \
     # needed by fzf
     bash ripgrep git \
     # needed by phpactor
-    php php-ctype php-iconv php-json php-openssl php-phar
+    php php-ctype php-curl php-dom php-iconv php-json php-mbstring php-openssl php-phar php-tokenizer
 
 COPY config /home/neovim/.config
 
@@ -42,14 +42,16 @@ RUN \
     && nvim --headless +'CocInstall -sync coc-vimlsp' +qall \
     && nvim --headless +'CocInstall -sync coc-json' +qall \
     && nvim --headless +'CocInstall -sync coc-yaml' +qall \
-    && nvim --headless +'CocInstall -sync coc-xml' +qall \
+    # && nvim --headless +'CocInstall -sync coc-xml' +qall \
     && nvim --headless +'CocInstall -sync coc-markdownlint' +qall \
     && nvim --headless +'CocInstall -sync coc-html' +qall \
     && nvim --headless +'CocInstall -sync coc-css' +qall \
     && nvim --headless +'CocInstall -sync coc-tsserver' +qall \
     && nvim --headless +'CocInstall -sync coc-phpls' +qall \
     # insert intelephense key
-    && sed -i "s/{{ nvim_coc_intelephense }}/$INTELEPHENSE_KEY/g" /home/neovim/.config/nvim/coc-settings.json
+    && sed -i "s/{{ nvim_coc_intelephense }}/$INTELEPHENSE_KEY/g" /home/neovim/.config/nvim/coc-settings.json \
+    # symlink needed by phpactor
+    && ln -s /home/neovim/.config/nvim/plugged/phpactor/bin/phpactor /usr/local/bin/phpactor
 
 # install coc-xml dependencies
 # RUN cd /home/neovim \
