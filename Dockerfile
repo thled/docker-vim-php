@@ -39,7 +39,6 @@ RUN \
     && nvim --headless +PlugInstall +qall \
     # install coc extensions (one at a time otherwise some fail)
     && nvim --headless +'CocInstall -sync coc-snippets ' +qall \
-    && nvim --headless +'CocInstall -sync coc-vimlsp' +qall \
     && nvim --headless +'CocInstall -sync coc-json' +qall \
     && nvim --headless +'CocInstall -sync coc-yaml' +qall \
     # && nvim --headless +'CocInstall -sync coc-xml' +qall \
