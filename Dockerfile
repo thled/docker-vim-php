@@ -1,4 +1,4 @@
-FROM alpine:latest
+FROM alpine:3.13
 
 ARG INTELEPHENSE_KEY="42"
 ENV RIPGREP_CONFIG_PATH "/home/neovim/.config/ripgrep/config"
@@ -8,14 +8,16 @@ ENV FZF_DEFAULT_COMMAND "rg --files --hidden"
 RUN apk add --no-cache \
     neovim neovim-doc \
     # needed by dockerfile
-    curl \
+    curl g++ \
     # needed by neovim as provider
     python3-dev py-pip gcc musl-dev \
     nodejs yarn \
     # needed by fzf
     bash ripgrep git \
     # needed by phpactor
-    php php-ctype php-curl php-dom php-iconv php-json php-mbstring php-openssl php-phar php-tokenizer
+    php8 php8-ctype php8-curl php8-dom php8-iconv php8-json php8-mbstring php8-openssl php8-phar php8-tokenizer php8-xml php8-xmlwriter \
+    && mv /usr/bin/php8 /usr/bin/php \
+    && echo "memory_limit=-1" >> /etc/php8/php.ini
 
 COPY config /home/neovim/.config
 
@@ -26,11 +28,11 @@ RUN adduser -D neovim \
 USER neovim
 
 RUN \
-    # install pythons neovim plugin
+    # install python's neovim plugin
     pip install pynvim \
-    # install nodes neovim plugin
+    # install node's neovim plugin
     && yarn global add neovim \
-    # install phps composer
+    # install php's composer
     && curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer \
     # install plugin manager for neovim
     && curl -fLo ~/.config/nvim/autoload/plug.vim --create-dirs \
