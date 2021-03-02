@@ -13,7 +13,7 @@ RUN apk add --no-cache \
     python3-dev py-pip gcc musl-dev \
     nodejs yarn \
     # needed by fzf
-    bash ripgrep git \
+    bash file ripgrep git \
     # needed by phpactor
     php8 php8-ctype php8-curl php8-dom php8-iconv php8-json php8-mbstring php8-openssl php8-phar php8-tokenizer php8-xml php8-xmlwriter \
     && mv /usr/bin/php8 /usr/bin/php \
