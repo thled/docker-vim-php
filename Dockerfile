@@ -24,16 +24,16 @@ COPY config /home/neovim/.config
 RUN adduser -D neovim \
     && chmod 777 /usr/local/bin \
     && chown -R neovim:neovim /home/neovim
-
 USER neovim
+
+# install composer
+COPY --from=composer:latest /usr/bin/composer /usr/local/bin/composer
 
 RUN \
     # install python's neovim plugin
     pip install pynvim \
     # install node's neovim plugin
     && yarn global add neovim \
-    # install php's composer
-    && curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer \
     # install plugin manager for neovim
     && curl -fLo ~/.config/nvim/autoload/plug.vim --create-dirs \
     https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim \
@@ -53,15 +53,6 @@ RUN \
     && sed -i "s/{{ nvim_coc_intelephense }}/$INTELEPHENSE_KEY/g" /home/neovim/.config/nvim/coc-settings.json \
     # symlink needed by phpactor
     && ln -s /home/neovim/.config/nvim/plugged/phpactor/bin/phpactor /usr/local/bin/phpactor
-
-# install coc-xml dependencies
-# RUN cd /home/neovim \
-#     openjdk11 \
-#     # install limmex
-#     && git clone https://github.com/eclipse/lemminx.git \
-#     && cd lemminx && ./mvnw clean verify \
-#     && mv org.eclipse.lemminx/taget/org.eclipse.lemminx-uber.jar /home/neovim/.config/coc/extensions/coc-xml-data \
-#     && rm -rf /home/neovim/lemminx
 
 WORKDIR /data
 
