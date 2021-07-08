@@ -18,7 +18,7 @@ A Docker container to run neovim with plugins to assist PHP development.
 
 ## Misc
 
-- Useful key bindings: <https://gist.github.com/thled/a6fcf4a02108598ae9ba5a8ab01d84e0#neovim>
+- Useful key bindings: <https://gist.github.com/thled/a6fcf4a02108598ae9ba5a8ab01d84e0#editor-neovim>
 - Remap detach keys: `$ echo '{ "detachKeys": "ctrl-q,q" }' > ~/.docker/config.json`
 - Save as alias "pvim":
   - Fish:
