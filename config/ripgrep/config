@@ -6,10 +6,10 @@
 --smart-case
 
 # Include hidden files
---hidden
+# --hidden
 
 # Disable .gitignore handling
-#--no-ignore
+# --no-ignore
 
 # Follow symlinks
 --follow

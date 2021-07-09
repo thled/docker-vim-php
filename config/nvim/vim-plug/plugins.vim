@@ -4,20 +4,27 @@ call plug#begin()
 Plug 'morhetz/gruvbox'
 
 " statusline
-Plug 'itchyny/lightline.vim'
+Plug 'hoob3rt/lualine.nvim'
+
+" syntax highlighting
+Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
+
+" lsp config helper
+Plug 'neovim/nvim-lspconfig'
 
 " search
-Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
-Plug 'junegunn/fzf.vim'
+Plug 'nvim-lua/popup.nvim'
+Plug 'nvim-lua/plenary.nvim'
+Plug 'nvim-telescope/telescope.nvim'
 
-" autocomplete + navigation
-Plug 'neoclide/coc.nvim', {'branch': 'release'}
+" autocomplete
+Plug 'hrsh7th/nvim-compe'
 
 " git
-Plug 'mhinz/vim-signify'
+Plug 'lewis6991/gitsigns.nvim'
 
 " comment in/out
-Plug 'tpope/vim-commentary'
+Plug 'terrortylor/nvim-comment'
 
 " surround
 Plug 'tpope/vim-surround'
@@ -27,15 +34,6 @@ Plug 'wellle/targets.vim'
 
 " switch true/false
 Plug 'zef/vim-cycle'
-
-" phpactor
-Plug 'phpactor/phpactor', {'for': 'php', 'branch': 'master', 'do': 'composer install --no-dev -o'}
-
-" php syntax
-Plug 'StanAngeloff/php.vim'
-
-" twig syntax
-Plug 'lumiliet/vim-twig'
 
 call plug#end()
 

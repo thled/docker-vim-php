@@ -1,60 +1,73 @@
-FROM alpine:3.13
+FROM alpine:3.14 as tools
+
+RUN apk add --no-cache \
+    git \
+    build-base \
+    cmake \
+    automake \
+    autoconf \
+    libtool \
+    pkgconf \
+    coreutils \
+    curl \
+    unzip \
+    gettext-tiny-dev \
+    musl-dev
+
+WORKDIR /tools
+
+RUN \
+    # build neovim
+    cd /tools \
+    && git clone https://github.com/neovim/neovim.git \
+    && cd neovim \
+    && make CMAKE_BUILD_TYPE=Release CMAKE_INSTALL_PREFIX=/tools/nvim install \
+    # fetch plugin manager for neovim
+    && cd /tools \
+    && curl -fLo /tools/plug.vim https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+
+FROM php:8.0.8-cli-alpine3.14
 
 ARG INTELEPHENSE_KEY="42"
 ENV RIPGREP_CONFIG_PATH "/home/neovim/.config/ripgrep/config"
-ENV FZF_DEFAULT_COMMAND "rg --files --hidden"
 
-# install neovim and dependencies
 RUN apk add --no-cache \
-    neovim neovim-doc \
-    # needed by dockerfile
-    curl g++ \
     # needed by neovim as provider
-    python3-dev py-pip gcc musl-dev \
+    python3-dev py-pip musl-dev g++ curl \
     nodejs yarn \
-    # needed by fzf
-    bash file ripgrep git \
-    # needed by phpactor
-    php8 php8-ctype php8-curl php8-dom php8-iconv php8-json php8-mbstring php8-openssl php8-phar php8-tokenizer php8-xml php8-xmlwriter \
-    && mv /usr/bin/php8 /usr/bin/php \
-    && echo "memory_limit=-1" >> /etc/php8/php.ini
+    # needed by telescope
+    ripgrep git \
+    # install intelephense
+    && yarn global add intelephense --prefix /usr/local
 
-COPY config /home/neovim/.config
+# add neovim
+COPY --from=tools /tools/nvim /nvim
+RUN ln -s /nvim/bin/nvim /usr/local/bin/nvim
 
-RUN adduser -D neovim \
-    && chmod 777 /usr/local/bin \
-    && chown -R neovim:neovim /home/neovim
+# add user
+RUN adduser -D neovim
 USER neovim
 
-# install composer
-COPY --from=composer:latest /usr/bin/composer /usr/local/bin/composer
+# add neovim config
+COPY --chown=neovim:neovim config /home/neovim/.config
+
+# add vim-plug
+COPY --chown=neovim:neovim --from=tools /tools/plug.vim /home/neovim/.config/nvim/autoload/
 
 RUN \
     # install python's neovim plugin
     pip install pynvim \
     # install node's neovim plugin
     && yarn global add neovim \
-    # install plugin manager for neovim
-    && curl -fLo ~/.config/nvim/autoload/plug.vim --create-dirs \
-    https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim \
     # install neovim plugins
     && nvim --headless +PlugInstall +qall \
-    # install coc extensions (one at a time otherwise some fail)
-    && nvim --headless +'CocInstall -sync coc-snippets ' +qall \
-    && nvim --headless +'CocInstall -sync coc-json' +qall \
-    && nvim --headless +'CocInstall -sync coc-yaml' +qall \
-    # && nvim --headless +'CocInstall -sync coc-xml' +qall \
-    && nvim --headless +'CocInstall -sync coc-markdownlint' +qall \
-    && nvim --headless +'CocInstall -sync coc-html' +qall \
-    && nvim --headless +'CocInstall -sync coc-css' +qall \
-    && nvim --headless +'CocInstall -sync coc-tsserver' +qall \
-    && nvim --headless +'CocInstall -sync coc-phpls' +qall \
+    # install treesitter languages
+    && nvim --headless +"TSInstallSync php" +"TSInstallSync yaml" +q \
     # insert intelephense key
-    && sed -i "s/{{ nvim_coc_intelephense }}/$INTELEPHENSE_KEY/g" /home/neovim/.config/nvim/coc-settings.json \
-    # symlink needed by phpactor
-    && ln -s /home/neovim/.config/nvim/plugged/phpactor/bin/phpactor /usr/local/bin/phpactor
+    && mkdir ~/intelephense \
+    && echo "$INTELEPHENSE_KEY" > ~/intelephense/licence.txt
 
 WORKDIR /data
 
-ENTRYPOINT [ "/usr/bin/nvim" ]
+ENTRYPOINT [ "nvim" ]
 
