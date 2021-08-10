@@ -29,7 +29,7 @@ local on_attach = function(client, bufnr)
     vim.lsp.handlers['textDocument/references'] = require('telescope.builtin').lsp_references
 end
 
-local servers = { "intelephense" }
+local servers = { "phpactor" }
 for _, lsp in ipairs(servers) do
     nvim_lsp[lsp].setup { on_attach = on_attach }
 end
