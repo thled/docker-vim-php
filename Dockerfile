@@ -24,7 +24,12 @@ RUN \
     && make CMAKE_BUILD_TYPE=Release CMAKE_INSTALL_PREFIX=/tools/nvim install \
     # fetch plugin manager for neovim
     && cd /tools \
-    && curl -fLo /tools/plug.vim https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+    && curl -fLo /tools/plug.vim https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim \
+    # build fzf-native for telescope
+    && cd /tools \
+    && git clone https://github.com/nvim-telescope/telescope-fzf-native.nvim.git \
+    && cd telescope-fzf-native.nvim \
+    && make
 
 FROM php:8.0.8-cli-alpine3.14
 
@@ -37,7 +42,6 @@ RUN apk add --no-cache \
     nodejs yarn \
     # needed by telescope
     ripgrep git \
-    make \
     # install intelephense
     && yarn global add intelephense --prefix /usr/local
 
@@ -54,6 +58,9 @@ COPY --chown=neovim:neovim config /home/neovim/.config
 
 # add vim-plug
 COPY --chown=neovim:neovim --from=tools /tools/plug.vim /home/neovim/.config/nvim/autoload/
+
+# add fzf-native
+COPY --chown=neovim:neovim --from=tools /tools/telescope-fzf-native.nvim/build/libfzf.so /home/neovim/
 
 RUN \
     # install python's neovim plugin
