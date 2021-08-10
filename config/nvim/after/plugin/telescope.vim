@@ -1,3 +1,13 @@
+if !exists('g:loaded_telescope')
+    finish
+endif
+
+" Config
+lua << EOF
+require('telescope').load_extension('fzf')
+EOF
+
+
 " Mappings
 nnoremap <C-p> <cmd>lua require('telescope.builtin').find_files()<cr>
 nnoremap <C-f> <cmd>lua require('telescope.builtin').live_grep()<cr>

@@ -37,6 +37,7 @@ RUN apk add --no-cache \
     nodejs yarn \
     # needed by telescope
     ripgrep git \
+    make \
     # install intelephense
     && yarn global add intelephense --prefix /usr/local
 
