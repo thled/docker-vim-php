@@ -1,7 +1,7 @@
 call plug#begin()
 
 " theme
-Plug 'morhetz/gruvbox'
+Plug 'sainnhe/gruvbox-material'
 
 " statusline
 Plug 'hoob3rt/lualine.nvim'
@@ -9,7 +9,7 @@ Plug 'hoob3rt/lualine.nvim'
 " syntax highlighting
 Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
 
-" lsp config helper
+" lsp
 Plug 'neovim/nvim-lspconfig'
 
 " search
@@ -24,7 +24,7 @@ Plug 'hrsh7th/nvim-compe'
 " git
 Plug 'lewis6991/gitsigns.nvim'
 
-" comment in/out
+" comment
 Plug 'terrortylor/nvim-comment'
 
 " surround
