@@ -27,6 +27,8 @@ local on_attach = function(client, bufnr)
 
     -- Config
     vim.lsp.handlers['textDocument/references'] = require('telescope.builtin').lsp_references
+    vim.api.nvim_command [[autocmd CursorHold  <buffer> lua vim.lsp.buf.document_highlight()]]
+    vim.api.nvim_command [[autocmd CursorMoved <buffer> lua vim.lsp.buf.clear_references()]]
 end
 
 local servers = { "phpactor" }
