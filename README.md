@@ -20,10 +20,10 @@ A Docker container to run neovim with plugins to assist PHP development.
     cd docker-vim-php
     ```
 
-1. Build image:
+1. Build image (`arg` for Intelephense premium key is optional):
 
     ```shell
-    docker build -t pvim .
+    docker build --build-arg INTELEPHENSE_KEY=XXX -t pvim .
     ```
 
 ## Usage

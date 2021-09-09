@@ -31,7 +31,9 @@ RUN \
     && cd telescope-fzf-native.nvim \
     && make
 
-FROM php:8.0.9-cli-alpine3.14
+FROM alpine:3.14
+
+ARG INTELEPHENSE_KEY="override me"
 
 ENV RIPGREP_CONFIG_PATH "/home/neovim/.config/ripgrep/config"
 
@@ -41,12 +43,12 @@ RUN apk add --no-cache \
     nodejs yarn \
     # needed by telescope
     ripgrep git \
-    # needed by phpactor
-    && docker-php-ext-install pcntl
+    # needed by lsp
+    && yarn global add intelephense --prefix /usr/local
 
 # add neovim
 COPY --from=tools /tools/nvim /nvim
-RUN ln -s /nvim/bin/nvim /usr/local/bin/nvim
+RUN ln -s /nvim/bin/nvim /usr/bin/nvim
 
 # add user
 RUN adduser -D neovim
@@ -61,10 +63,6 @@ COPY --chown=neovim:neovim --from=tools /tools/plug.vim /home/neovim/.config/nvi
 # add fzf-native
 COPY --chown=neovim:neovim --from=tools /tools/telescope-fzf-native.nvim/build/libfzf.so /home/neovim/
 
-# add composer
-COPY --from=composer:latest /usr/bin/composer /usr/local/bin/composer
-ENV PATH /home/neovim/.composer/vendor/phpactor/phpactor/bin:$PATH
-
 RUN \
     # install python's neovim plugin
     pip install pynvim \
@@ -73,12 +71,12 @@ RUN \
     # install neovim plugins
     && nvim --headless +PlugInstall +qall \
     # install treesitter languages
-    && nvim --headless +"TSInstallSync php" +"TSInstallSync yaml" +q \
-    # install phpactor
-    && composer global config minimum-stability dev \
-    && composer global require phpactor/phpactor
+    && nvim --headless +"TSInstallSync php" +"TSInstallSync yaml" +"TSInstallSync xml" +q \
+    # insert intelephense key
+    && mkdir ~/intelephense \
+    && echo "$INTELEPHENSE_KEY" > ~/intelephense/licence.txt
 
 WORKDIR /data
 
-ENTRYPOINT [ "nvim" ]
+ENTRYPOINT [ "nvim", "."]
 
