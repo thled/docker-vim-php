@@ -71,10 +71,14 @@ RUN \
     # install neovim plugins
     && nvim --headless +PlugInstall +qall \
     # install treesitter languages
-    && nvim --headless +"TSInstallSync php" +"TSInstallSync yaml" +"TSInstallSync xml" +q \
+    && nvim --headless +"TSInstallSync php yaml json css scss html javascript" +q \
     # insert intelephense key
     && mkdir ~/intelephense \
-    && echo "$INTELEPHENSE_KEY" > ~/intelephense/licence.txt
+    && echo "$INTELEPHENSE_KEY" > ~/intelephense/licence.txt \
+    # install coq deps
+    && cd ~/.config/nvim/plugged/coq_nvim \
+    && python3 -m coq deps
+
 
 WORKDIR /data
 
