@@ -74,10 +74,7 @@ RUN \
     && nvim --headless +"TSInstallSync php yaml json css scss html javascript" +q \
     # insert intelephense key
     && mkdir ~/intelephense \
-    && echo "$INTELEPHENSE_KEY" > ~/intelephense/licence.txt \
-    # install coq deps
-    && cd ~/.config/nvim/plugged/coq_nvim \
-    && python3 -m coq deps
+    && echo "$INTELEPHENSE_KEY" > ~/intelephense/licence.txt
 
 
 WORKDIR /data
