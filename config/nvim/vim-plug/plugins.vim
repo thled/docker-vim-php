@@ -41,5 +41,8 @@ Plug 'wellle/targets.vim'
 " switch true/false
 Plug 'zef/vim-cycle'
 
+" ai assistance
+Plug 'github/copilot.vim'
+
 call plug#end()
 

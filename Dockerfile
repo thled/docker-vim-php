@@ -33,6 +33,7 @@ RUN \
 
 FROM alpine:3.14
 
+ARG COPILOT_TOKEN="override me"
 ARG INTELEPHENSE_KEY="override me"
 
 ENV RIPGREP_CONFIG_PATH "/home/neovim/.config/ripgrep/config"
@@ -72,10 +73,11 @@ RUN \
     && nvim --headless +PlugInstall +qall \
     # install treesitter languages
     && nvim --headless +"TSInstallSync php yaml json css scss html javascript" +q \
+    # insert copilot beta key
+    && sed -i "s/<TOKEN>/$COPILOT_TOKEN/" /home/neovim/.config/github-copilot/hosts.json \
     # insert intelephense key
     && mkdir ~/intelephense \
     && echo "$INTELEPHENSE_KEY" > ~/intelephense/licence.txt
-
 
 WORKDIR /data
 

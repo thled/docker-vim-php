@@ -36,32 +36,8 @@ lua <<EOF
                 behavior = cmp.ConfirmBehavior.Replace,
                 select = true,
             }),
-            ['<Tab>'] = function(fallback)
-                if vim.fn.pumvisible() == 1 then
-                    vim.fn.feedkeys(
-                        vim.api.nvim_replace_termcodes('<C-n>', true, true, true), 'n'
-                    )
-                elseif luasnip.expand_or_jumpable() then
-                    vim.fn.feedkeys(
-                        vim.api.nvim_replace_termcodes('<Plug>luasnip-expand-or-jump', true, true, true), ''
-                    )
-                else
-                    fallback()
-                end
-            end,
-            ['<S-Tab>'] = function(fallback)
-                if vim.fn.pumvisible() == 1 then
-                    vim.fn.feedkeys(
-                        vim.api.nvim_replace_termcodes('<C-p>', true, true, true), 'n'
-                    )
-                elseif luasnip.jumpable(-1) then
-                    vim.fn.feedkeys(
-                        vim.api.nvim_replace_termcodes('<Plug>luasnip-jump-prev', true, true, true), ''
-                    )
-                else
-                    fallback()
-                end
-            end,
+            ['<Tab>'] = cmp.mapping.select_next_item({behavior=cmp.SelectBehavior.Insert}),
+            ['<S-Tab>'] = cmp.mapping.select_prev_item({behavior=cmp.SelectBehavior.Insert}),
         },
         sources = {
             { name = 'nvim_lsp' },
