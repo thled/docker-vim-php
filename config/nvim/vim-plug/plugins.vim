@@ -7,7 +7,7 @@ Plug 'sainnhe/gruvbox-material'
 Plug 'hoob3rt/lualine.nvim'
 
 " syntax highlighting
-Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
+Plug 'nvim-treesitter/nvim-treesitter'
 
 " lsp
 Plug 'neovim/nvim-lspconfig'
@@ -30,7 +30,7 @@ Plug 'L3MON4D3/LuaSnip'
 Plug 'lewis6991/gitsigns.nvim'
 
 " comment
-Plug 'terrortylor/nvim-comment'
+Plug 'numToStr/Comment.nvim'
 
 " surround
 Plug 'tpope/vim-surround'
